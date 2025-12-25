@@ -4,7 +4,8 @@ from django.core.validators import MinValueValidator, MaxValueValidator
 from django.utils import timezone
 
 # Create your models here.
-class Appointment(models.Model):
+class \
+        Appointment(models.Model):
     class Status(models.TextChoices):
         SCHEDULED = "SCHEDULED", "Προγραμματισμένη"
         COMPLETED = "COMPLETED", "Ολοκληρώθηκε"
@@ -40,7 +41,8 @@ class Appointment(models.Model):
         null=True, blank=True
     )
     notes_from_therapist = models.TextField(blank=True, null=True)
-    created_at=models.DateTimeField(auto_now_add=True)
+    created_at=models.DateTimeField(auto_now_add=True
+                                    )
     updated_at=models.DateTimeField(auto_now=True)
 
     class Meta:
