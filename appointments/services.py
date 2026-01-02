@@ -1,0 +1,175 @@
+from accounts.models import Psychologist
+from .repositories import AppointmentRepository
+from patients.repositories import PatientRepository
+from .models import Appointment
+
+
+class AppointmentService:
+
+    @staticmethod
+    def list_for_psych(psych: Psychologist):
+        """
+        Use case:
+        - Ο ψυχολόγος βλέπει όλα τα ραντεβού του.
+
+        Rules:
+        - Επιστρέφονται ΜΟΝΟ ραντεβού του συγκεκριμένου ψυχολόγου.
+        """
+
+        return AppointmentRepository.for_psych(psych)
+
+    @staticmethod
+    def list_for_patient(psych: Psychologist, patient_id: int):
+        """
+        Use case:
+        - Ο ψυχολόγος βλέπει όλα τα ραντεβού ενός ασθενή.
+
+        Rules:
+        - Ο ασθενής ΠΡΕΠΕΙ να ανήκει στον ψυχολόγο.
+        """
+
+        # 1️⃣ Ownership check: ο ασθενής πρέπει να είναι του ψυχολόγου
+        patient = PatientRepository.get_by_id_for_psych(psych, patient_id)
+
+        # 2️⃣ Επιστρέφουμε ΜΟΝΟ τα ραντεβού αυτού του ασθενή
+        return AppointmentRepository.for_patient(psych, patient)
+
+
+    @staticmethod
+    def get_appointment(psych: Psychologist, appointment_id: int):
+        """
+        Use case:
+        - Προβολή συγκεκριμένου ραντεβού.
+
+        Rules:
+        - Ο ψυχολόγος μπορεί να δει ΜΟΝΟ ραντεβού που του ανήκουν.
+        """
+
+        return AppointmentRepository.get_by_id_for_psych(psych, appointment_id)
+
+    @staticmethod
+    def create_appointment(psych: Psychologist, patient_id: int, data: dict):
+        """
+        Use case:
+        - Δημιουργία νέου ραντεβού για ασθενή.
+
+        Rules:
+        - Ο ασθενής ΠΡΕΠΕΙ να ανήκει στον ψυχολόγο.
+        - Το status ορίζεται αρχικά σε SCHEDULED.
+        """
+
+        # 1️⃣ Ownership check: ο ασθενής πρέπει να είναι του ψυχολόγου
+        patient = PatientRepository.get_by_id_for_psych(psych, patient_id)
+
+        # 2️⃣ Αφαιρούμε πεδία που ΔΕΝ επιτρέπεται να έρθουν από το frontend
+        disallowed_fields = {"status", "psychologist", "patient"}
+        clean_data = {
+            key: value
+            for key, value in data.items()
+            if key not in disallowed_fields
+        }
+
+        # 3️⃣ Δημιουργούμε το ραντεβού με default status
+        appointment = AppointmentRepository.create(
+            psych=psych,
+            patient=patient,
+            data={
+                **clean_data,
+                "status": Appointment.Status.SCHEDULED,
+            }
+        )
+
+        return appointment
+
+    @staticmethod
+    def update_appointment(psych: Psychologist, appointment_id: int, data: dict):
+        """
+        Use case:
+        - Ενημέρωση στοιχείων ραντεβού.
+
+        Rules:
+        - Το ραντεβού πρέπει να ανήκει στον ψυχολόγο
+        - COMPLETED ραντεβού δεν τροποποιούνται
+        - Δεν αλλάζουμε ownership ή status από εδώ
+        """
+
+        # 1️⃣ Ownership check
+        appointment = AppointmentRepository.get_by_id_for_psych(psych, appointment_id)
+
+        # 2️⃣ Business rule: completed ραντεβού δεν αλλάζουν
+        if appointment.status == Appointment.Status.COMPLETED:
+            raise ValueError("Δεν επιτρέπεται αλλαγή ολοκληρωμένου ραντεβού")
+
+        # 3️⃣ Κόβουμε fields που δεν επιτρέπεται να αλλάξουν
+        disallowed_fields = {
+            "status",
+            "psychologist",
+            "patient",
+            "created_at",
+            "updated_at",
+        }
+
+        clean_data = {
+            key: value
+            for key, value in data.items()
+            if key not in disallowed_fields
+        }
+
+        # 4️⃣ Delegate το update στο repository
+        return AppointmentRepository.update(appointment, clean_data)
+
+    @staticmethod
+    def cancel_appointment(psych: Psychologist, appointment_id: int):
+        """
+        Use case:
+        - Ακύρωση ραντεβού.
+
+        Rules:
+        - Το ραντεβού πρέπει να ανήκει στον ψυχολόγο
+        - Δεν ακυρώνεται COMPLETED ραντεβού
+        """
+
+        # 1️⃣ Ownership check
+        appointment = AppointmentRepository.get_by_id_for_psych(psych, appointment_id)
+
+        # 2️⃣ Αν είναι ήδη ακυρωμένο, δεν κάνουμε τίποτα
+        if appointment.status == Appointment.Status.CANCELED:
+            return appointment
+
+        # 3️⃣ Δεν ακυρώνουμε ολοκληρωμένο ραντεβού
+        if appointment.status == Appointment.Status.COMPLETED:
+            raise ValueError("Δεν επιτρέπεται ακύρωση ολοκληρωμένου ραντεβού")
+
+        # 4️⃣ Ακύρωση
+        return AppointmentRepository.update(
+            appointment,
+            {"status": Appointment.Status.CANCELED}
+        )
+
+    @staticmethod
+    def complete_appointment(psych: Psychologist, appointment_id: int):
+        """
+        Use case:
+        - Ολοκλήρωση ραντεβού.
+
+        Rules:
+        - Το ραντεβού πρέπει να ανήκει στον ψυχολόγο
+        - Δεν ολοκληρώνεται ακυρωμένο ραντεβού
+        """
+
+        # 1️⃣ Ownership check
+        appointment = AppointmentRepository.get_by_id_for_psych(psych, appointment_id)
+
+        # 2️⃣ Αν είναι ήδη ολοκληρωμένο, δεν κάνουμε τίποτα
+        if appointment.status == Appointment.Status.COMPLETED:
+            return appointment
+
+        # 3️⃣ Δεν ολοκληρώνουμε ακυρωμένο ραντεβού
+        if appointment.status == Appointment.Status.CANCELED:
+            raise ValueError("Δεν επιτρέπεται ολοκλήρωση ακυρωμένου ραντεβού")
+
+        # 4️⃣ Ολοκλήρωση
+        return AppointmentRepository.update(
+            appointment,
+            {"status": Appointment.Status.COMPLETED}
+        )
