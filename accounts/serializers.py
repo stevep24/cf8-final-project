@@ -44,3 +44,21 @@ class PsychologistSerializer(serializers.ModelSerializer):
         ]
         # timestamps μόνο read-only
         read_only_fields = ["id", "created_at", "updated_at"]
+
+class RegisterSerializer(serializers.Serializer):
+    username = serializers.CharField()
+    password = serializers.CharField(write_only=True)
+    first_name = serializers.CharField()
+    last_name = serializers.CharField()
+
+    def create(self, validated_data):
+        user = User.objects.create_user(
+            username=validated_data["username"],
+            password=validated_data["password"],
+            first_name=validated_data["first_name"],
+            last_name=validated_data["last_name"],
+        )
+
+        Psychologist.objects.create(user=user)
+
+        return user
