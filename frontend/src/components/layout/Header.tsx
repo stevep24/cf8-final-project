@@ -1,0 +1,72 @@
+import { useState } from "react";
+import {Menu, X, User, UsersRound, CalendarDays, House  } from "lucide-react";
+import {SidebarButton} from "@/components/ui/SidebarButton.tsx";
+import {useNavigate} from "react-router";
+
+const Header = () => {
+    const [open, setOpen] = useState(false);
+    const navigate = useNavigate();
+
+    // TODO: αργότερα βάλε αληθινό login state
+    const isLoggedIn = true;
+
+    return (
+        <>
+            {/* HEADER */}
+            <header className="bg-sky-950 fixed top-0 left-0 w-full z-50 border-b-2 border-logo-color/40">
+                <div className="container flex items-center gap-3 py-4">
+
+                    {/* Logo + Title */}
+                    <div className="flex items-center gap-2">
+                        <img
+                            src="/logo_brain.png"
+                            alt="ManagePsy logo"
+                            className="h-10 w-auto"
+                        />
+                        <h1 className="text-logo-color font-bold text-xl">
+                            ManagePsy
+                        </h1>
+                    </div>
+
+                    {/* Hamburger icon (μόνο αν logged in) */}
+                    {isLoggedIn && (
+                        <button
+                            onClick={() => setOpen(!open)}
+                            className="ml-3 text-logo-color cursor-pointer hover:text-amber-400 transition"
+                        >
+                            {/* Toggle μεταξύ Menu και X */}
+                            {open ? <X className="h-auto w-auto" /> : <Menu className="h-auto w-auto" />}
+                        </button>
+                    )}
+
+                </div>
+            </header>
+
+            {/* SIDEBAR ΚΑΤΩ ΑΠΟ HEADER */}
+            {isLoggedIn && open && (
+                <aside
+                    className="fixed top-[64px] left-0 w-64 bg-sky-950 h-[calc(100vh-64px)]
+                     shadow-xl z-40 border-r-2 rounded-r-2xl border-logo-color/40 p-4"
+                >
+                    <nav className="flex flex-col gap-5 py-4">
+                        <SidebarButton onClick={()=> navigate('/homepage')} icon={House} label="Home Page" className="bg-sky-950 text-logo-color hover:bg-logo-color hover:text-sky-950" />
+                        <SidebarButton onClick={()=> navigate('/my-profile')} icon={User} label="My Profile" className="bg-sky-950 text-logo-color hover:bg-logo-color hover:text-sky-950" />
+                        <SidebarButton onClick={()=> navigate("/patients")} icon={UsersRound} label="Patients" className="bg-sky-950 text-logo-color hover:bg-logo-color" />
+                        <SidebarButton onClick={() => navigate("/appointments")} icon={CalendarDays} label="Appointments" className="bg-sky-950 text-logo-color hover:bg-logo-color" />
+                    </nav>
+                </aside>
+            )}
+
+            {/* Overlay όταν είναι ανοιχτό (κάτω από το header) */}
+            {isLoggedIn && open && (
+                <div
+                    className="fixed top-[64px] left-0 w-full h-[calc(100vh-64px)] bg-black/40 z-30"
+                    onClick={() => setOpen(false)}
+                />
+            )}
+        </>
+    );
+};
+
+export default Header;
+
