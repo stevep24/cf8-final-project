@@ -7,10 +7,7 @@ from .models import Psychologist
 class PsychologistRepository:
     """
     Repository Layer για το Psychologist model.
-
-    Εδώ συγκεντρώνουμε ΟΛΑ τα queries που αφορούν τον ψυχολόγο.
-    Δεν θέλουμε στα views / services να γράφουμε κατευθείαν
-    Psychologist.objects.filter(...) κτλ.
+    συγκεντρώνουμε ΟΛΑ τα queries που αφορούν τον ψυχολόγο.
     """
 
     @staticmethod
@@ -18,10 +15,6 @@ class PsychologistRepository:
         """
         Φέρνει το προφίλ ψυχολόγου που είναι συνδεδεμένο
         με τον συγκεκριμένο Django User.
-
-        Χρήση:
-        - Όταν έχουμε request.user και θέλουμε το Psychologist profile.
-        - Αν δεν υπάρχει, σηκώνει 404 (χρήσιμο σε REST API).
         """
         return get_object_or_404(Psychologist, user=user)
 
@@ -30,9 +23,6 @@ class PsychologistRepository:
         """
         Επιστρέφει True/False αν ο συγκεκριμένος User έχει ήδη
         προφίλ Psychologist.
-
-        Χρήση:
-        - During signup, για να μη φτιάξεις διπλό προφίλ.
         """
         return Psychologist.objects.filter(user=user).exists()
 
@@ -47,22 +37,7 @@ class PsychologistRepository:
     @staticmethod
     def create_for_user(user: User, data: dict) -> Psychologist:
         """
-        Δημιουργεί νέο Psychologist συνδεδεμένο με έναν User.
-
-        Σημαντικό:
-        - Το user έρχεται από το authentication flow (π.χ. signup/login).
-        - Δεν εμπιστευόμαστε το frontend να στείλει user_id.
-          Το περνάμε εμείς από το backend.
-
-        Παράδειγμα data:
-        {
-          "first_name": "...",
-          "last_name": "...",
-          "phone_number": "...",
-          "specialization": "...",
-          "license_number": "...",
-          "notes": "..."
-        }
+         Δημιουργεί νέο Psychologist συνδεδεμένο με έναν User.
         """
         return Psychologist.objects.create(user=user, **data)
 
@@ -70,9 +45,6 @@ class PsychologistRepository:
     def update(psych: Psychologist, data: dict) -> Psychologist:
         """
         Κάνει update το υπάρχον προφίλ ψυχολόγου με νέα δεδομένα.
-
-        ΔΕΝ αποφασίζει αν επιτρέπεται να αλλάξει κάτι (π.χ. license_number).
-        Αυτή η λογική ανήκει στο Service Layer.
         """
         disallowed_fields = {"id", "pk", "user", "created_at", "updated_at"}
 
@@ -87,8 +59,5 @@ class PsychologistRepository:
     def delete(psych: Psychologist):
         """
         Διαγράφει το προφίλ ψυχολόγου.
-
-        Συνήθως σε τέτοιο app δεν θα το χρησιμοποιήσεις συχνά,
-        αλλά το βάζουμε για πληρότητα.
         """
         psych.delete()

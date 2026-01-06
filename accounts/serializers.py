@@ -62,3 +62,24 @@ class RegisterSerializer(serializers.Serializer):
         Psychologist.objects.create(user=user)
 
         return user
+
+class RegisterPsychologistSerializer(serializers.Serializer):
+    username = serializers.CharField()
+    password = serializers.CharField(write_only=True)
+    email = serializers.EmailField()
+    first_name = serializers.CharField()
+    last_name = serializers.CharField()
+    phone_number = serializers.CharField()
+    specialization = serializers.CharField()
+    license_number = serializers.CharField()
+    notes = serializers.CharField(required=False, allow_blank=True)
+
+    def validate_username(self, value):
+        if User.objects.filter(username=value).exists():
+            raise serializers.ValidationError("Το username χρησιμοποιείται ήδη")
+        return value
+
+    def validate_license_number(self, value):
+        if Psychologist.objects.filter(license_number=value).exists():
+            raise serializers.ValidationError("Υπάρχει ήδη ψυχολόγος με αυτόν τον αριθμό άδειας")
+        return value
