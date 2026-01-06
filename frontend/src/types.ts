@@ -1,3 +1,4 @@
+import * as React from "react";
 
 
 export type SidebarButtonProps = React.ComponentProps<"button"> & {
@@ -13,6 +14,9 @@ export type TextFieldProps = {
     required?: boolean;
     className?: string;
     pattern?: string;
+    onChange?: (e:React.ChangeEvent<HTMLInputElement>) => void;
+    onBlur?: (e: React.FocusEvent<HTMLInputElement>) => void;
+    onFocus?: (e: React.FocusEvent<HTMLInputElement>) => void;
 };
 
 export interface AuthUser {

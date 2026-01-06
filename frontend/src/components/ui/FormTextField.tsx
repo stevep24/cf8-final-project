@@ -9,7 +9,12 @@ export function FormTextField({
     type,
     placeholder,
     required,
-    className=""}: TextFieldProps) {
+    className="",
+    onChange,
+    onBlur,
+    onFocus,
+}: TextFieldProps) {
+
     return (
         <div className={`m-3 p-4 ${className}`}>
             <Label className="text-logo-color mb-1 required:" htmlFor={id}>{label}</Label>
@@ -18,7 +23,11 @@ export function FormTextField({
                 required = {required}
                 type={type}
                 id={id}
-                placeholder={placeholder} />
+                placeholder={placeholder}
+                onChange={onChange}
+                onBlur={onBlur}
+                onFocus={onFocus}/>
+
 
         </div>
 

@@ -13,6 +13,7 @@ const HomePage = () => {
             return;
         }
 
+
         const fetchMe = async () => {
             try {
                 const response = await fetch("http://localhost:8000/api/auth/me/", {

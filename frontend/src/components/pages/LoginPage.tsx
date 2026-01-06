@@ -80,6 +80,7 @@ const LoginPage = () => {
                             Log in
                         </Button>
                     </div>
+
                 </form>
             </div>
         </>
