@@ -2,6 +2,7 @@ from django.shortcuts import get_object_or_404
 from .models import Appointment
 from accounts.models import Psychologist
 from patients.models import Patient
+from django.utils import timezone
 
 
 class AppointmentRepository:
@@ -9,10 +10,6 @@ class AppointmentRepository:
     Repository Layer για το Appointment model.
     Περιέχει ΟΛΑ τα queries και την επικοινωνία με τη βάση.
     """
-
-    # ---------------------------------------------------------
-    # QUERY METHODS
-    # ---------------------------------------------------------
 
     @staticmethod
     def for_psych(psych: Psychologist):
@@ -46,7 +43,7 @@ class AppointmentRepository:
         """
         return Appointment.objects.filter(
             psychologist=psych,
-            session_datetime__gte="timezone.now()"
+            session_datetime_gte=timezone.now()
         ).order_by("session_datetime")
 
 

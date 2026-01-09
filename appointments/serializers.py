@@ -29,4 +29,20 @@ class AppointmentSerializer(serializers.ModelSerializer):
             "created_at",
             "updated_at",
         ]
-        read_only_fields = ["id", "created_at", "updated_at"]
+        read_only_fields = ["id", "created_at", "updated_at", "patient", "psychologist"]
+
+class AppointmentWriteSerializer(serializers.ModelSerializer):
+    """
+    Write serializer (DTO) για create/update.
+    Δεν δέχεται patient/psychologist από frontend.
+    """
+    class Meta:
+        model = Appointment
+        fields = [
+            "session_datetime",
+            "duration_minutes",
+            "session_type",
+            "price",
+            "notes_from_therapist",
+
+        ]
