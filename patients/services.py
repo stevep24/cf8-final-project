@@ -1,5 +1,4 @@
 from accounts.models import Psychologist
-from .models import Patient, TreatmentPlan
 from .repositories import PatientRepository, TreatmentPlanRepository
 from appointments.repositories import AppointmentRepository
 from django.db import transaction
@@ -199,80 +198,31 @@ class TreatmentPlanService:
         # 3️⃣ Διαγραφή
         TreatmentPlanRepository.delete(plan)
 
-    class PatientService:
-
-        @staticmethod
-        def list_for_psych(psych: Psychologist):
-            """
-            Use case:
-            - Ο ψυχολόγος βλέπει όλους τους ασθενείς του.
-            """
-            return PatientRepository.for_psych(psych)
-
-        @staticmethod
-        def get_patient(psych: Psychologist, patient_id: int):
-            """
-            Use case:
-            - Προβολή συγκεκριμένου ασθενή.
-            """
-            return PatientRepository.get_by_id_for_psych(psych, patient_id)
-
+class PatientService:
+    @staticmethod
+    def list_for_psych(psych):
+        return PatientRepository.for_psych(psych)
 
     @staticmethod
-    def create_patient(psych: Psychologist, data: dict):
-        """
-        Use case:
-        - Δημιουργία νέου ασθενή.
-        """
+    def get_patient(psych, patient_id):
+        return PatientRepository.get_by_id_for_psych(psych, patient_id)
 
+    @staticmethod
+    def create_patient(psych, data):
         disallowed_fields = {"psychologist"}
-        clean_data = {
-            key: value
-            for key, value in data.items()
-            if key not in disallowed_fields
-        }
-
+        clean_data = {k: v for k, v in data.items() if k not in disallowed_fields}
         return PatientRepository.create_for_psych(psych, clean_data)
 
-
     @staticmethod
-    def update_patient(psych: Psychologist, patient_id: int, data: dict):
-        """
-        Use case:
-        - Ενημέρωση στοιχείων ασθενή.
-        """
-
+    def update_patient(psych, patient_id, data):
         patient = PatientRepository.get_by_id_for_psych(psych, patient_id)
-
         disallowed_fields = {"psychologist", "created_at", "updated_at"}
-        clean_data = {
-            key: value
-            for key, value in data.items()
-            if key not in disallowed_fields
-        }
-
+        clean_data = {k: v for k, v in data.items() if k not in disallowed_fields}
         return PatientRepository.update_patient(patient, clean_data)
 
-
     @staticmethod
-    def delete_patient(psych: Psychologist, patient_id: int):
-        """
-        Use case:
-        - Διαγραφή ασθενή.
-
-        Rules:
-        - Δεν επιτρέπεται διαγραφή αν υπάρχουν ραντεβού.
-        """
-
+    def delete_patient(psych, patient_id):
         patient = PatientRepository.get_by_id_for_psych(psych, patient_id)
-
-        has_appointments = AppointmentRepository.for_patient(
-            psych, patient
-        ).exists()
-
-        if has_appointments:
-            raise ValueError(
-                "Δεν επιτρέπεται διαγραφή ασθενή με υπάρχοντα ραντεβού"
-            )
-
+        if AppointmentRepository.for_patient(psych, patient).exists():
+            raise ValueError("Δεν επιτρέπεται διαγραφή ασθενή με υπάρχοντα ραντεβού")
         PatientRepository.delete_patient(patient)
