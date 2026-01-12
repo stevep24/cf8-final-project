@@ -1,10 +1,9 @@
-import * as React from "react";
-
+import type { ComponentProps, ElementType } from "react";
 
 export type SidebarButtonProps = React.ComponentProps<"button"> & {
     icon: React.ElementType;
     label: string;
-}
+};
 
 export type TextFieldProps = {
     id: string;
@@ -19,11 +18,14 @@ export type TextFieldProps = {
     onFocus?: (e: React.FocusEvent<HTMLInputElement>) => void;
 };
 
-export interface AuthUser {
-    username: string;
+export type Patient = {
+    id: number;
     first_name: string;
     last_name: string;
-    psychologist_id: number;
+    phone_number: string;
     email: string;
-}
+    emergency_contact_name: string;
+    emergency_contact_phone: string;
+    status: string;
 
+};

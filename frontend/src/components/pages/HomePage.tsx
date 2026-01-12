@@ -1,61 +1,112 @@
 import { useEffect, useState } from "react";
-import type {AuthUser} from "../../types.ts";
+import { Users, CalendarDays, Plus } from "lucide-react";
+import { useNavigate } from "react-router";
+
+type User = {
+    username: string;
+    email: string;
+};
 
 const HomePage = () => {
-    const [user, setUser] = useState<AuthUser | null>(null);
-    const [error, setError] = useState("");
+    const navigate = useNavigate();
+
+    const [user, setUser] = useState<User | null>(null);
+    const [patientsCount, setPatientsCount] = useState(0);
+    const [upcomingCount, setUpcomingCount] = useState(0);
 
     useEffect(() => {
         const token = localStorage.getItem("access");
 
         if (!token) {
-            setError("Δεν είσαι συνδεδεμένος");
-            return;
+            navigate("/login");
         }
-
-
-        const fetchMe = async () => {
-            try {
-                const response = await fetch("http://localhost:8000/api/auth/me/", {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                    },
-                });
-
-                if (!response.ok) {
-                    throw new Error("Αποτυχία ταυτοποίησης");
-                }
-
-                const data = await response.json();
-                setUser(data);
-            } catch (err: unknown) {
-                if (err instanceof Error) {
-                    setError(err.message);
-                } else {
-                    setError("Κάτι πήγε στραβά");
-                }
-            }
-        };
-
-        fetchMe();
     }, []);
 
-    return (
-        <div className="p-10 text-white">
-            {error && (
-                <p className="text-red-400 text-lg font-semibold">
-                    {error}
-                </p>
-            )}
+    useEffect(() => {
+        const token = localStorage.getItem("access");
+        if (!token) return;
 
-            {user && (
-                <div className="bg-sky-950 p-6 rounded-lg max-w-md mx-auto">
-                    <h2 className="text-2xl font-bold mb-2">
-                        Welcome, {user.username}
-                    </h2>
-                    <p className="opacity-80">{user.email}</p>
+        fetch("http://localhost:8000/api/auth/me/", {
+            headers: { Authorization: `Bearer ${token}` },
+        })
+            .then(res => res.json())
+            .then(setUser);
+
+        fetch("http://localhost:8000/api/patients/", {
+            headers: { Authorization: `Bearer ${token}` },
+        })
+            .then(res => res.json())
+            .then(data => setPatientsCount(data.length));
+
+        fetch("http://localhost:8000/api/appointments/upcoming/", {
+            headers: { Authorization: `Bearer ${token}` },
+        })
+            .then(res => res.json())
+            .then(data => setUpcomingCount(data.length));
+    }, []);
+    return (
+        <div className="min-h-[92vh]   p-10 text-white max-w-6xl mx-auto">
+
+            {/* Welcome */}
+            <h1 className="text-3xl font-bold mb-8">
+                Καλώς ήρθες{user && `, ${user.username}`}
+            </h1>
+
+            {/* Stats */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
+
+                <div className="bg-sky-950 p-6 rounded-lg flex items-center gap-4">
+                    <Users className="text-logo-color w-8 h-8" />
+                    <div>
+                        <p className="text-sm opacity-80">Σύνολο ασθενών</p>
+                        <p className="text-2xl font-bold">{patientsCount}</p>
+                    </div>
                 </div>
-            )}
+
+                <div className="bg-sky-950 p-6 rounded-lg flex items-center gap-4">
+                    <CalendarDays className="text-logo-color w-8 h-8" />
+                    <div>
+                        <p className="text-sm opacity-80">Επερχόμενα ραντεβού</p>
+                        <p className="text-2xl font-bold">{upcomingCount}</p>
+                    </div>
+                </div>
+
+                <div className="bg-sky-950 p-6 rounded-lg flex items-center gap-4">
+                    <Plus className="text-logo-color w-8 h-8" />
+                    <div>
+                        <p className="text-sm opacity-80">Γρήγορη ενέργεια</p>
+                        <button
+                            onClick={() => navigate("/appointments")}
+                            className="text-logo-color underline"
+                        >
+                            Νέο ραντεβού
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+
+            {/* Quick actions */}
+            <div className="bg-sky-950 p-6 rounded-lg">
+                <h2 className="text-xl font-semibold mb-4">Γρήγορες κινήσεις</h2>
+
+                <div className="flex flex-wrap gap-4">
+                    <button
+                        onClick={() => navigate("/patients")}
+                        className="bg-logo-color text-sky-950 px-4 py-2 rounded hover:bg-amber-400"
+                    >
+                        Λίστα ασθενών
+                    </button>
+
+                    <button
+                        onClick={() => navigate("/appointments")}
+                        className="bg-logo-color text-sky-950 px-4 py-2 rounded hover:bg-amber-400"
+                    >
+                        Ραντεβού
+                    </button>
+                </div>
+            </div>
+
         </div>
     );
 };
