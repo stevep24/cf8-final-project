@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {Menu, X, User, UsersRound, CalendarDays, House  } from "lucide-react";
 import {SidebarButton} from "@/components/ui/SidebarButton.tsx";
 import {useNavigate} from "react-router";
@@ -7,17 +7,25 @@ const Header = () => {
     const [open, setOpen] = useState(false);
     const navigate = useNavigate();
 
-    // TODO: αργότερα βάλε αληθινό login state
-    const isLoggedIn = true;
+    const isLoggedIn = !!localStorage.getItem("access");
+
+    const logout = () => {
+        localStorage.removeItem("access");
+        localStorage.removeItem("refresh");
+        setOpen(false);
+        window.location.href = "/login";
+    };
 
     return (
         <>
             {/* HEADER */}
             <header className="bg-sky-950 fixed top-0 left-0 w-full z-50 border-b-2 border-logo-color/40">
-                <div className="container flex items-center gap-3 py-4">
+                <div className="container flex items-center justify-between py-4">
 
-                    {/* Logo + Title */}
-                    <div className="flex items-center gap-2">
+                    {/* ΑΡΙΣΤΕΡΑ: Logo + Hamburger */}
+                    <div className="flex items-center gap-3">
+
+                        {/* Logo */}
                         <img
                             src="/logo_brain.png"
                             alt="ManagePsy logo"
@@ -26,21 +34,34 @@ const Header = () => {
                         <h1 className="text-logo-color font-bold text-xl">
                             ManagePsy
                         </h1>
+
+                        {/* Hamburger (μόνο αν logged in) */}
+                        {isLoggedIn && (
+                            <button
+                                onClick={() => setOpen(!open)}
+                                className="ml-2 text-logo-color hover:text-amber-400 transition"
+                            >
+                                {open ? <X /> : <Menu />}
+                            </button>
+                        )}
+
                     </div>
 
-                    {/* Hamburger icon (μόνο αν logged in) */}
+                    {/* ΔΕΞΙΑ: Logout */}
                     {isLoggedIn && (
                         <button
-                            onClick={() => setOpen(!open)}
-                            className="ml-3 text-logo-color cursor-pointer hover:text-amber-400 transition"
+                            onClick={logout}
+                            className="text-sm font-semibold text-logo-color
+                           border border-logo-color px-3 py-1 rounded-md
+                           hover:bg-logo-color hover:text-sky-950 transition"
                         >
-                            {/* Toggle μεταξύ Menu και X */}
-                            {open ? <X className="h-auto w-auto" /> : <Menu className="h-auto w-auto" />}
+                            Logout
                         </button>
                     )}
 
                 </div>
             </header>
+
 
             {/* SIDEBAR ΚΑΤΩ ΑΠΟ HEADER */}
             {isLoggedIn && open && (
