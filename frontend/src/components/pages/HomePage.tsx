@@ -73,13 +73,19 @@ const HomePage = () => {
 
                 <div className="bg-sky-950 p-6 rounded-lg flex items-center gap-4">
                     <Plus className="text-logo-color w-8 h-8" />
-                    <div>
+                    <div className="">
                         <p className="text-sm opacity-80">Γρήγορη ενέργεια</p>
                         <button
                             onClick={() => navigate("/appointments")}
                             className="text-logo-color underline"
                         >
                             Νέο ραντεβού
+                        </button>
+                        <button
+                            onClick={() => navigate("/signup")}
+                            className="text-logo-color underline pl-2"
+                        >
+                            Νέος Ασθενης
                         </button>
                     </div>
                 </div>

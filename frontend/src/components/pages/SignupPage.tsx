@@ -68,7 +68,7 @@ const SignupPage = () => {
 
     return (
         <>
-            <div className=" min-h-[92vh] flex items-center justify-center">
+            <div className=" flex items-center justify-center min-h-[calc(100vh-64px)]">
                 <form
                     onSubmit={handleSubmit}
                     className="bg-sky-950 max-w-4xl w-150 mx-4 border rounded-md grid grid-cols-1 md:grid-cols-2 text-white"
