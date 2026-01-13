@@ -47,14 +47,14 @@ const LoginPage = () => {
     }
     return (
         <>
-            <div className="min-h-[92vh] flex items-center justify-center">
+            <div className="flex items-center justify-center min-h-[calc(100vh-64px)]">
                 <form
                     onSubmit={handleSubmit}
                     className="bg-sky-950 max-w-sm w-full mx-4 border rounded-md"
                     autoComplete="off"
                 >
                     <div className="m-3 p-4">
-                        <Label className="text-logo-color mb-1" htmlFor="username">Email</Label>
+                        <Label className="text-logo-color mb-1" htmlFor="username">Username</Label>
                         <Input required type="text"
                                id="username"
                                placeholder="π.χ stevep21"
@@ -72,6 +72,13 @@ const LoginPage = () => {
                                value={password}/>
 
                     </div>
+
+                    {error && (
+                        <p className="text-red-400 text-center font-medium mt-2">
+                            {error}
+                        </p>
+                    )}
+
                     <div>
                         <Button
                             className=" bg-logo-color hover:bg-orange-400 text-sky-950 block mx-auto mb-3 "
