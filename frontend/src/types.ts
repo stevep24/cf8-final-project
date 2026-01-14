@@ -22,10 +22,39 @@ export type Patient = {
     id: number;
     first_name: string;
     last_name: string;
+    mental_disorder: string;
+    //birth_date:
     phone_number: string;
     email: string;
     emergency_contact_name: string;
     emergency_contact_phone: string;
     status: string;
+    notes: string
 
+};
+
+
+export type AppointmentStatus =
+    | "SCHEDULED"
+    | "COMPLETED"
+    | "CANCELED"
+    | "NO_SHOW";
+
+export type SessionType = "IN_PERSON" | "ONLINE";
+
+export interface Appointment {
+    id: number;
+
+    patient: {
+        id: number;
+        first_name: string;
+        last_name: string;
+    };
+
+    session_datetime: string;
+    duration_minutes: number;
+    status: AppointmentStatus;
+    session_type: SessionType;
+    price: string | null;
+    notes_from_therapist?: string | null;
 };

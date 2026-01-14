@@ -43,7 +43,7 @@ class AppointmentRepository:
         """
         return Appointment.objects.filter(
             psychologist=psych,
-            session_datetime_gte=timezone.now()
+            session_datetime__gte=timezone.now()
         ).order_by("session_datetime")
 
 

@@ -6,6 +6,7 @@ import LoginPage from "@/components/pages/LoginPage.tsx";
 import SignupPage from "@/components/pages/SignupPage.tsx";
 import HomePage from "@/components/pages/HomePage.tsx";
 import PatientsPage from "@/components/pages/PatientsPage.tsx";
+import AppointmentPage from "@/components/pages/AppointmentPage.tsx";
 
 
 
@@ -22,6 +23,7 @@ function App() {
                 <Route path="/signup" element={<SignupPage/>} />
                 <Route path="/home" element={<HomePage/>}/>
                 <Route path="/patients" element={<PatientsPage/>} />
+                <Route path="/appointments" element={<AppointmentPage/>}/>
 
 
             </Route>

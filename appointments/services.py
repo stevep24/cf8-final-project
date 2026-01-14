@@ -98,7 +98,11 @@ class AppointmentService:
 
         # 2️⃣ Business rule: completed ραντεβού δεν αλλάζουν
         if appointment.status == Appointment.Status.COMPLETED:
-            raise ValueError("Δεν επιτρέπεται αλλαγή ολοκληρωμένου ραντεβού")
+            allowed_fields = {"notes_from_therapist"}
+            if not set(data.keys()).issubset(allowed_fields):
+                raise ValueError(
+                    "Σε ολοκληρωμένο ραντεβού επιτρέπονται μόνο σημειώσεις"
+                )
 
         # 3️⃣ Κόβουμε fields που δεν επιτρέπεται να αλλάξουν
         disallowed_fields = {

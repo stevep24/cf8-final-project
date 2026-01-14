@@ -70,7 +70,7 @@ const Header = () => {
                      shadow-xl z-40 border-r-2 rounded-r-2xl border-logo-color/40 p-4"
                 >
                     <nav className="flex flex-col gap-5 py-4">
-                        <SidebarButton onClick={()=> navigate('/homepage')} icon={House} label="Home Page" className="bg-sky-950 text-logo-color hover:bg-logo-color hover:text-sky-950" />
+                        <SidebarButton onClick={()=> navigate('/home')} icon={House} label="Home Page" className="bg-sky-950 text-logo-color hover:bg-logo-color hover:text-sky-950" />
                         <SidebarButton onClick={()=> navigate('/my-profile')} icon={User} label="My Profile" className="bg-sky-950 text-logo-color hover:bg-logo-color hover:text-sky-950" />
                         <SidebarButton onClick={()=> navigate("/patients")} icon={UsersRound} label="Patients" className="bg-sky-950 text-logo-color hover:bg-logo-color" />
                         <SidebarButton onClick={() => navigate("/appointments")} icon={CalendarDays} label="Appointments" className="bg-sky-950 text-logo-color hover:bg-logo-color" />

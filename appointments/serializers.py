@@ -38,11 +38,11 @@ class AppointmentWriteSerializer(serializers.ModelSerializer):
     """
     class Meta:
         model = Appointment
-        fields = [
-            "session_datetime",
-            "duration_minutes",
-            "session_type",
-            "price",
-            "notes_from_therapist",
-
-        ]
+        fields = "__all__"
+        extra_kwargs = {
+            "patient": {"required": False},
+            "session_datetime": {"required": False},
+            "duration_minutes": {"required": False},
+            "session_type": {"required": False},
+            "price": {"required": False},
+        }
