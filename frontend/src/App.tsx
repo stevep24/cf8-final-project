@@ -1,5 +1,6 @@
 import {BrowserRouter,Routes,Route} from "react-router";
 import './App.css'
+import AuthRoute from "@/components/AuthRoute";
 import Layout from "@/components/layout/Layout.tsx";
 import FirstPage from "@/components/pages/FirstPage.tsx";
 import LoginPage from "@/components/pages/LoginPage.tsx";
@@ -21,11 +22,9 @@ function App() {
                 <Route path="/" element={<FirstPage/>} />
                 <Route path="/login" element={<LoginPage/>} />
                 <Route path="/signup" element={<SignupPage/>} />
-                <Route path="/home" element={<HomePage/>}/>
-                <Route path="/patients" element={<PatientsPage/>} />
-                <Route path="/appointments" element={<AppointmentPage/>}/>
-
-
+                <Route path="/home" element={<AuthRoute><HomePage/></AuthRoute>}/>
+                <Route path="/patients" element={<AuthRoute><PatientsPage/></AuthRoute>} />
+                <Route path="/appointments" element={<AuthRoute><AppointmentPage/></AuthRoute>}/>
             </Route>
           </Routes>
       </BrowserRouter>
