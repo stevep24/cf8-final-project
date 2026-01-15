@@ -45,10 +45,10 @@ class TreatmentPlanService:
         - Το plan δημιουργείται ως inactive (εκτός αν αποφασίσει αλλιώς άλλο service).
         """
 
-        # 1️⃣ Ownership check: ο ασθενής πρέπει να είναι του ψυχολόγου
+        # Ownership check: ο ασθενής πρέπει να είναι του ψυχολόγου
         patient = PatientRepository.get_by_id_for_psych(psych, patient_id)
 
-        # 2️⃣ Ασφαλές create (psych & patient περνάνε από backend)
+        # Ασφαλές create (psych & patient περνάνε από backend)
         plan = TreatmentPlanRepository.create(
             psych=psych,
             patient=patient,
@@ -69,26 +69,26 @@ class TreatmentPlanService:
         - Κάθε ασθενής έχει ΜΟΝΟ ΕΝΑ active plan
         """
 
-        # 1️⃣ Ownership check
+        # Ownership check
         patient = PatientRepository.get_by_id_for_psych(psych, patient_id)
 
-        # 2️⃣ Βρίσκουμε τυχόν ενεργό plan
+        # Βρίσκουμε τυχόν ενεργό plan
         current_active_plan = TreatmentPlanRepository.get_active_for_patient(
             psych, patient
         )
 
-        # 3️⃣ Αν υπάρχει ενεργό plan → το απενεργοποιούμε
+        # Αν υπάρχει ενεργό plan → το απενεργοποιούμε
         if current_active_plan:
             TreatmentPlanRepository.set_inactive(current_active_plan)
 
-        # 4️⃣ Δημιουργούμε νέο plan (inactive by default)
+        # Δημιουργούμε νέο plan (inactive by default)
         new_plan = TreatmentPlanRepository.create(
             psych=psych,
             patient=patient,
             data=data
         )
 
-        # 5️⃣ Το κάνουμε active
+        # Το κάνουμε active
         TreatmentPlanRepository.set_active(new_plan)
 
         return new_plan
@@ -105,25 +105,25 @@ class TreatmentPlanService:
         - Κάθε ασθενής έχει ΜΟΝΟ ΕΝΑ active plan
         """
 
-        # 1️⃣ Παίρνουμε το plan (ownership check)
+        # Παίρνουμε το plan (ownership check)
         plan = TreatmentPlanRepository.get_by_id_for_psych(psych, plan_id)
 
         patient = plan.patient
 
-        # 2️⃣ Αν το plan είναι ήδη active, δεν κάνουμε τίποτα
+        # Αν το plan είναι ήδη active, δεν κάνουμε τίποτα
         if plan.is_active:
             return plan
 
-        # 3️⃣ Βρίσκουμε τυχόν άλλο active plan για τον ίδιο ασθενή
+        #Βρίσκουμε τυχόν άλλο active plan για τον ίδιο ασθενή
         current_active = TreatmentPlanRepository.get_active_for_patient(
             psych, patient
         )
 
-        # 4️⃣ Αν υπάρχει και είναι διαφορετικό plan → το απενεργοποιούμε
+        #Αν υπάρχει και είναι διαφορετικό plan → το απενεργοποιούμε
         if current_active and current_active.id != plan.id:
             TreatmentPlanRepository.set_inactive(current_active)
 
-        # 5️⃣ Ενεργοποιούμε το ζητούμενο plan
+        #Ενεργοποιούμε το ζητούμενο plan
         TreatmentPlanRepository.set_active(plan)
 
         return plan
@@ -140,10 +140,10 @@ class TreatmentPlanService:
         - Δεν επιτρέπεται αλλαγή state (is_active) από εδώ
         """
 
-        # 1️⃣ Παίρνουμε το plan με ownership check
+        #Παίρνουμε το plan με ownership check
         plan = TreatmentPlanRepository.get_by_id_for_psych(psych, plan_id)
 
-        # 2️⃣ Κόβουμε fields που ΔΕΝ επιτρέπεται να αλλάξουν εδώ
+        #Κόβουμε fields που ΔΕΝ επιτρέπεται να αλλάξουν εδώ
         disallowed_fields = {"is_active"}
         clean_data = {
             key: value
@@ -151,7 +151,7 @@ class TreatmentPlanService:
             if key not in disallowed_fields
         }
 
-        # 3️⃣ Delegate το update στο repository
+        #Delegate το update στο repository
         return TreatmentPlanRepository.update(plan, clean_data)
 
     @staticmethod
@@ -164,14 +164,14 @@ class TreatmentPlanService:
         - Το plan πρέπει να ανήκει στον ψυχολόγο
         """
 
-        # 1️⃣ Ownership check
+        # Ownership check
         plan = TreatmentPlanRepository.get_by_id_for_psych(psych, plan_id)
 
-        # 2️⃣ Αν είναι ήδη inactive, δεν κάνουμε τίποτα
+        #Αν είναι ήδη inactive, δεν κάνουμε τίποτα
         if not plan.is_active:
             return plan
 
-        # 3️⃣ Απενεργοποίηση
+        #Απενεργοποίηση
         return TreatmentPlanRepository.set_inactive(plan)
 
 
@@ -186,16 +186,12 @@ class TreatmentPlanService:
         - Δεν επιτρέπεται διαγραφή ACTIVE plan
         """
 
-        # 1️⃣ Ownership check
+        # Ownership check
         plan = TreatmentPlanRepository.get_by_id_for_psych(psych, plan_id)
 
-        # 2️⃣ Business rule: δεν διαγράφουμε active plan
-        if plan.is_active:
-            raise ValueError(
-                "Δεν επιτρέπεται η διαγραφή ενεργού treatment plan"
-            )
 
-        # 3️⃣ Διαγραφή
+
+        #  Διαγραφή
         TreatmentPlanRepository.delete(plan)
 
 class PatientService:
@@ -223,6 +219,4 @@ class PatientService:
     @staticmethod
     def delete_patient(psych, patient_id):
         patient = PatientRepository.get_by_id_for_psych(psych, patient_id)
-        if AppointmentRepository.for_patient(psych, patient).exists():
-            raise ValueError("Δεν επιτρέπεται διαγραφή ασθενή με υπάρχοντα ραντεβού")
         PatientRepository.delete_patient(patient)

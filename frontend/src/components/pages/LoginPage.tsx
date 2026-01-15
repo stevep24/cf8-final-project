@@ -81,7 +81,7 @@ const LoginPage = () => {
 
                     <div>
                         <Button
-                            className=" bg-logo-color hover:bg-orange-400 text-sky-950 block mx-auto mb-3 "
+                            className=" bg-logo-color hover:opacity-70 cursor-pointer text-sky-950 block mx-auto mb-3 "
                             type="submit"
                         >
                             Log in

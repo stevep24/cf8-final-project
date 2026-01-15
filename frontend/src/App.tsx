@@ -8,6 +8,7 @@ import SignupPage from "@/components/pages/SignupPage.tsx";
 import HomePage from "@/components/pages/HomePage.tsx";
 import PatientsPage from "@/components/pages/PatientsPage.tsx";
 import AppointmentPage from "@/components/pages/AppointmentPage.tsx";
+import MyProfilePage from "@/components/pages/MyProfilePage.tsx";
 
 
 
@@ -23,6 +24,7 @@ function App() {
                 <Route path="/login" element={<LoginPage/>} />
                 <Route path="/signup" element={<SignupPage/>} />
                 <Route path="/home" element={<AuthRoute><HomePage/></AuthRoute>}/>
+                <Route path="/my-profile" element={<AuthRoute><MyProfilePage /></AuthRoute>}/>
                 <Route path="/patients" element={<AuthRoute><PatientsPage/></AuthRoute>} />
                 <Route path="/appointments" element={<AuthRoute><AppointmentPage/></AuthRoute>}/>
             </Route>

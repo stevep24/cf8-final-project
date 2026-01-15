@@ -7,5 +7,5 @@ urlpatterns = [
     path("login/", TokenObtainPairView.as_view(), name="token_obtain_pair"),
     path("refresh/", TokenRefreshView.as_view(), name="token_refresh"),
     path("me/", me_view, name="me"),
-    path("psychologist/me/", psychologist_me_view, name="psychologist-me")
+    path("psychologist/", psychologist_me_view, name="psychologist-me")
 ]

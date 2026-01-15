@@ -7,6 +7,7 @@ export type SidebarButtonProps = React.ComponentProps<"button"> & {
 
 export type TextFieldProps = {
     id: string;
+    name: string;
     label: string;
     type?: string;
     placeholder?: string;
@@ -57,4 +58,17 @@ export interface Appointment {
     session_type: SessionType;
     price: string | null;
     notes_from_therapist?: string | null;
+};
+
+
+type PsychologistProfile = {
+    user: {
+        email: string;
+    };
+    first_name: string;
+    last_name: string;
+    phone_number: string;
+    specialization: string;
+    license_number: string;
+    notes?: string;
 };
