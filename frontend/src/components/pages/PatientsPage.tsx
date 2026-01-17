@@ -1,11 +1,13 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, Fragment } from "react";
 import { BookUser, Trash2, UserRoundPen } from "lucide-react";
 import type { Patient } from "@/types.ts";
+import {Button} from "@/components/ui/button";
+import PatientForm from "../ui/PatientForm.tsx";
 
 const PatientsPage = () => {
     const [patients, setPatients] = useState<Patient[]>([]);
     const [error, setError] = useState("");
-
+    const [showCreate, setShowCreate] = useState(false);
     const [expandedId, setExpandedId] = useState<number | null>(null);
     const [editId, setEditId] = useState<number | null>(null);
     const [editForm, setEditForm] = useState<Partial<Patient>>({});
@@ -31,6 +33,25 @@ const PatientsPage = () => {
             .then(setPatients)
             .catch(err => setError(err.message));
     }, []);
+
+    const fetchPatients = async () => {
+        const token = localStorage.getItem("access");
+
+        const res = await fetch("http://localhost:8000/api/patients/", {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        });
+
+        if (!res.ok) {
+            console.error("Failed to fetch patients");
+            return;
+        }
+
+        const data = await res.json();
+        setPatients(data);
+    };
+
 
     // -------------------------
     // DELETE
@@ -84,8 +105,15 @@ const PatientsPage = () => {
     // -------------------------
     return (
         <div className="p-10 text-white max-w-6xl mx-auto">
-            <h1 className="text-3xl font-bold mb-6">Ασθενείς</h1>
-
+            <div className="flex items-center justify-between mb-6">
+                <h1 className="text-2xl font-bold">Patients</h1>
+                <Button
+                    className="bg-logo-color text-sky-950 hover:opacity-70 cursor-pointer"
+                    onClick={() => setShowCreate(true)}
+                >
+                    + Νέος Ασθενής
+                </Button>
+            </div>
             {error && <p className="text-red-400 mb-4">{error}</p>}
 
             <div className="bg-sky-950 rounded-lg overflow-hidden">
@@ -101,9 +129,9 @@ const PatientsPage = () => {
 
                     <tbody>
                     {patients.map(p => (
-                        <>
+                        <Fragment key={p.id}>
                             {/* BASIC */}
-                            <tr key={p.id} className="border-t border-white/10">
+                            <tr  className="border-t border-white/10">
                                 <td className="p-3">
                                     {p.first_name} {p.last_name}
                                 </td>
@@ -114,7 +142,7 @@ const PatientsPage = () => {
                                         onClick={() =>
                                             setExpandedId(expandedId === p.id ? null : p.id)
                                         }
-                                        className="mx-auto flex items-center gap-1 text-logo-color hover:opacity-70"
+                                        className="mx-auto flex items-center gap-1 text-logo-color hover:opacity-70 cursor-pointer"
                                     >
                                         <BookUser size={18} />
                                         More details
@@ -141,22 +169,22 @@ const PatientsPage = () => {
 
                                                 <div>
                                                     <b>Σημειώσεις:</b>
-                                                    <div className="mt-1 whitespace-pre-wrap break-words bg-sky-950 p-2 rounded">
-                                                        {p.notes || "-"}
+                                                    <div className="mt-2 max-h-32 overflow-y-auto whitespace-pre-wrap break-all">
+                                                        {p.notes || "—"}
                                                     </div>
                                                 </div>
 
                                                 <div className="flex gap-4 mt-4">
                                                     <button
                                                         onClick={() => startEdit(p)}
-                                                        className="flex items-center gap-1 bg-logo-color text-sky-950 px-3 py-1 rounded"
+                                                        className="flex items-center gap-1 bg-logo-color text-sky-950 px-3 py-1 rounded hover:opacity-70 cursor-pointer"
                                                     >
                                                         <UserRoundPen size={16} />
                                                         Edit
                                                     </button>
                                                     <button
                                                         onClick={() => deletePatient(p.id)}
-                                                        className="flex items-center gap-1 bg-red-500 px-3 py-1 rounded"
+                                                        className="flex items-center gap-1 bg-red-500 px-3 py-1 rounded hover:opacity-70 cursor-pointer"
                                                     >
                                                         <Trash2 size={16} />
                                                         Delete
@@ -176,6 +204,7 @@ const PatientsPage = () => {
                                                 ].map(([key, label]) => (
                                                     <input
                                                         key={key}
+                                                        name={key}
                                                         className="p-2 rounded text-black"
                                                         placeholder={label}
                                                         value={(editForm as any)[key] || ""}
@@ -243,13 +272,13 @@ const PatientsPage = () => {
                                                 <div className="md:col-span-2 flex gap-4">
                                                     <button
                                                         onClick={() => saveEdit(p.id)}
-                                                        className="bg-logo-color text-sky-950 px-4 py-2 rounded"
+                                                        className="bg-logo-color text-sky-950 px-4 py-2 rounded hover:opacity-70 cursor-pointer"
                                                     >
                                                         Save
                                                     </button>
                                                     <button
                                                         onClick={() => setEditId(null)}
-                                                        className="border px-4 py-2 rounded"
+                                                        className="border px-4 py-2 rounded hover:opacity-70 cursor-pointer"
                                                     >
                                                         Cancel
                                                     </button>
@@ -259,11 +288,18 @@ const PatientsPage = () => {
                                     </td>
                                 </tr>
                             )}
-                        </>
+                        </Fragment>
                     ))}
                     </tbody>
                 </table>
+
             </div>
+            {showCreate && (
+                <PatientForm
+                    onClose={() => setShowCreate(false)}
+                    onCreated={fetchPatients}
+                />
+            )}
         </div>
     );
 };

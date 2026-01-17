@@ -150,7 +150,7 @@ const SignupPage = () => {
                     {passwordFocused&& (<PasswordChecklist password={formData.password} />)}
                     <div className="md:col-span-2 flex justify-center mt-4  ">
                         <Button
-                            className="text-xl h-12 w-30 bg-logo-color hover:bg-orange-400 text-sky-950 block mx-auto mb-3 "
+                            className="text-xl h-12 w-30 bg-logo-color hover:opacity-70 cursor-pointertext-sky-950 block mx-auto mb-3 "
                             type="submit"
                         >
                             Sign up

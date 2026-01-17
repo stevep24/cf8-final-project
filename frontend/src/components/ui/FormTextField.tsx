@@ -4,6 +4,7 @@ import type {TextFieldProps} from "@/types.ts";
 
 export function FormTextField({
     id,
+    name,
     label,
     pattern,
     type,
@@ -17,10 +18,11 @@ export function FormTextField({
 
     return (
         <div className={`m-3 p-4 ${className}`}>
-            <Label className="text-logo-color mb-1 required:" htmlFor={id}>{label}</Label>
+            <Label className="text-logo-color cursor-pointer mb-1 required:" htmlFor={id}>{label}</Label>
             <Input
                 pattern={pattern}
                 required = {required}
+                name={name}
                 type={type}
                 id={id}
                 placeholder={placeholder}

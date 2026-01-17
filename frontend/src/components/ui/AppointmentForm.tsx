@@ -121,7 +121,7 @@ const AppointmentForm = ({ onCreated }: { onCreated: () => void }) => {
                 }
             />
 
-            <button className="md:col-span-3 bg-logo-color text-sky-950 py-2 rounded">
+            <button className="md:col-span-3 bg-logo-color text-sky-950 py-2 rounded hover:opacity-70 cursor-pointer">
                 Προσθήκη Ραντεβού
             </button>
         </form>

@@ -16,7 +16,7 @@ class \
         ONLINE    = "ONLINE",    "Διαδικτυακά"
     patient = models.ForeignKey(
         "patients.Patient",
-        on_delete=models.PROTECT,
+        on_delete=models.CASCADE,
         related_name="appointments",
     )
     psychologist = models.ForeignKey(

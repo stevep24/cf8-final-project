@@ -86,7 +86,7 @@ const AppointmentPage = () => {
             {/* ΚΟΥΜΠΙ ΝΕΟΥ ΡΑΝΤΕΒΟΥ */}
             <button
                 onClick={() => setShowForm((prev) => !prev)}
-                className="mb-6 bg-logo-color text-sky-950 px-4 py-2 rounded"
+                className="mb-6 bg-logo-color text-sky-950 px-4 py-2 rounded hover:opacity-70 cursor-pointer"
             >
                 + Νέο Ραντεβού
             </button>
@@ -142,7 +142,7 @@ const AppointmentPage = () => {
                         setSelectedDate("");
                         fetchAppointments();
                     }}
-                    className="bg-gray-500 px-4 py-2 rounded"
+                    className="bg-gray-500 px-4 py-2 rounded hover:opacity-70 cursor-pointer"
                 >
                     Clear
                 </button>
@@ -205,13 +205,13 @@ const AppointmentPage = () => {
                             <div className="flex gap-2 pt-2">
                                 <button
                                     onClick={() => completeAppointment(app.id)}
-                                    className="bg-green-500 px-3 py-1 rounded"
+                                    className="bg-green-500 px-3 py-1 rounded hover:opacity-70 cursor-pointer"
                                 >
                                     Complete
                                 </button>
                                 <button
                                     onClick={() => cancelAppointment(app.id)}
-                                    className="bg-red-500 px-3 py-1 rounded"
+                                    className="bg-red-500 px-3 py-1 rounded hover:opacity-70 cursor-pointer"
                                 >
                                     Cancel
                                 </button>
