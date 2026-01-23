@@ -7,7 +7,6 @@ from .models import Psychologist
 class PsychologistRepository:
     """
     Repository Layer για το Psychologist model.
-    συγκεντρώνουμε ΟΛΑ τα queries που αφορούν τον ψυχολόγο.
     """
 
     @staticmethod
@@ -30,7 +29,7 @@ class PsychologistRepository:
     def get_by_id(psych_id: int) -> Psychologist:
         """
         Βρίσκει ψυχολόγο με βάση το primary key (id).
-        Σηκώνει 404 αν δεν βρεθεί.
+        404 αν δεν βρεθεί.
         """
         return get_object_or_404(Psychologist, id=psych_id)
 

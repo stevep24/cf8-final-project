@@ -8,7 +8,6 @@ phone_regex = RegexValidator(
     regex=r'^\+?\d{8,15}$',
     message="Το τηλέφωνο πρέπει να περιέχει 8–15 ψηφία και μπορεί να ξεκινά με +."
 )
-# Create your models here.
 
 class Patient(models.Model):
     psychologist = models.ForeignKey(

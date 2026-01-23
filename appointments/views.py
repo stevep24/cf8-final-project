@@ -12,7 +12,7 @@ from .repositories import AppointmentRepository
 
 class AppointmentViewSet(viewsets.ViewSet):
     """
-    ViewSet για Appointments (REST API).
+    ViewSet για Appointments.
     Ownership rule:
     - κάθε ψυχολόγος βλέπει/πειράζει ΜΟΝΟ τα δικά του ραντεβού.
     """
@@ -86,14 +86,10 @@ class AppointmentViewSet(viewsets.ViewSet):
     def destroy(self, request, pk=None):
         psych = self._get_psych(request)
 
-        # ownership enforced από repository
         appointment = AppointmentRepository.get_by_id_for_psych(psych, int(pk))
         AppointmentRepository.delete(appointment)
         return Response(status=status.HTTP_204_NO_CONTENT)
 
-    # -------------------------
-    # Custom endpoints
-    # -------------------------
 
     @action(detail=False, methods=["get"], url_path=r"by-patient/(?P<patient_id>\d+)")
     def by_patient(self, request, patient_id=None):

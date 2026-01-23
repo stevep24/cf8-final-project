@@ -7,8 +7,7 @@ from accounts.serializers import PsychologistSerializer
 class AppointmentSerializer(serializers.ModelSerializer):
     """
     Serializer για τα ραντεβού.
-    Εμφανίζει πλήρη στοιχεία ασθενή & ψυχολόγου (nested),
-    αλλά δεν τα αλλάζουμε από εδώ.
+    Εμφανίζει πλήρη στοιχεία ασθενή & ψυχολόγου (nested)
     """
 
     patient = PatientSerializer(read_only=True)
@@ -34,7 +33,6 @@ class AppointmentSerializer(serializers.ModelSerializer):
 class AppointmentWriteSerializer(serializers.ModelSerializer):
     """
     Write serializer (DTO) για create/update.
-    Δεν δέχεται patient/psychologist από frontend.
     """
     class Meta:
         model = Appointment

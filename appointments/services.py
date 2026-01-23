@@ -28,10 +28,8 @@ class AppointmentService:
         - Ο ασθενής ΠΡΕΠΕΙ να ανήκει στον ψυχολόγο.
         """
 
-        # 1️⃣ Ownership check: ο ασθενής πρέπει να είναι του ψυχολόγου
         patient = PatientRepository.get_by_id_for_psych(psych, patient_id)
 
-        # 2️⃣ Επιστρέφουμε ΜΟΝΟ τα ραντεβού αυτού του ασθενή
         return AppointmentRepository.for_patient(psych, patient)
 
 
@@ -58,10 +56,8 @@ class AppointmentService:
         - Το status ορίζεται αρχικά σε SCHEDULED.
         """
 
-        # 1️⃣ Ownership check: ο ασθενής πρέπει να είναι του ψυχολόγου
         patient = PatientRepository.get_by_id_for_psych(psych, patient_id)
 
-        # 2️⃣ Αφαιρούμε πεδία που ΔΕΝ επιτρέπεται να έρθουν από το frontend
         disallowed_fields = {"status", "psychologist", "patient"}
         clean_data = {
             key: value
@@ -93,10 +89,8 @@ class AppointmentService:
         - Δεν αλλάζουμε ownership ή status από εδώ
         """
 
-        # 1️⃣ Ownership check
         appointment = AppointmentRepository.get_by_id_for_psych(psych, appointment_id)
 
-        # 2️⃣ Business rule: completed ραντεβού δεν αλλάζουν
         if appointment.status == Appointment.Status.COMPLETED:
             allowed_fields = {"notes_from_therapist"}
             if not set(data.keys()).issubset(allowed_fields):
@@ -104,7 +98,6 @@ class AppointmentService:
                     "Σε ολοκληρωμένο ραντεβού επιτρέπονται μόνο σημειώσεις"
                 )
 
-        # 3️⃣ Κόβουμε fields που δεν επιτρέπεται να αλλάξουν
         disallowed_fields = {
             "status",
             "psychologist",
@@ -119,7 +112,6 @@ class AppointmentService:
             if key not in disallowed_fields
         }
 
-        # 4️⃣ Delegate το update στο repository
         return AppointmentRepository.update(appointment, clean_data)
 
     @staticmethod
@@ -133,18 +125,14 @@ class AppointmentService:
         - Δεν ακυρώνεται COMPLETED ραντεβού
         """
 
-        # 1️⃣ Ownership check
         appointment = AppointmentRepository.get_by_id_for_psych(psych, appointment_id)
 
-        # 2️⃣ Αν είναι ήδη ακυρωμένο, δεν κάνουμε τίποτα
         if appointment.status == Appointment.Status.CANCELED:
             return appointment
 
-        # 3️⃣ Δεν ακυρώνουμε ολοκληρωμένο ραντεβού
         if appointment.status == Appointment.Status.COMPLETED:
             raise ValueError("Δεν επιτρέπεται ακύρωση ολοκληρωμένου ραντεβού")
 
-        # 4️⃣ Ακύρωση
         return AppointmentRepository.update(
             appointment,
             {"status": Appointment.Status.CANCELED}
@@ -161,18 +149,14 @@ class AppointmentService:
         - Δεν ολοκληρώνεται ακυρωμένο ραντεβού
         """
 
-        # 1️⃣ Ownership check
         appointment = AppointmentRepository.get_by_id_for_psych(psych, appointment_id)
 
-        # 2️⃣ Αν είναι ήδη ολοκληρωμένο, δεν κάνουμε τίποτα
         if appointment.status == Appointment.Status.COMPLETED:
             return appointment
 
-        # 3️⃣ Δεν ολοκληρώνουμε ακυρωμένο ραντεβού
         if appointment.status == Appointment.Status.CANCELED:
             raise ValueError("Δεν επιτρέπεται ολοκλήρωση ακυρωμένου ραντεβού")
 
-        # 4️⃣ Ολοκλήρωση
         return AppointmentRepository.update(
             appointment,
             {"status": Appointment.Status.COMPLETED}

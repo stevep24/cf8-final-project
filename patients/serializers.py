@@ -8,7 +8,6 @@ from accounts.serializers import PsychologistSerializer
 class PatientSerializer(serializers.ModelSerializer):
     """
     Serializer για τους ασθενείς.
-    Ο psychologist φαίνεται (nested) αλλά δεν αλλάζει από το frontend.
     """
 
     psychologist = PsychologistSerializer(read_only=True)
@@ -38,7 +37,6 @@ class PatientSerializer(serializers.ModelSerializer):
 class TreatmentPlanSerializer(serializers.ModelSerializer):
     """
     Πλάνο θεραπείας για έναν ασθενή.
-    Και εδώ id/patient/psychologist είναι μόνο για ανάγνωση.
     """
 
     patient = PatientSerializer(read_only=True)

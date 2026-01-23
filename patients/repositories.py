@@ -6,11 +6,6 @@ from .models import TreatmentPlan, Patient
 from accounts.models import Psychologist
 
 class PatientRepository:
-    """
-    Repository Layer για το Patient model.
-    Εδώ συγκεντρώνουμε ΟΛΑ τα queries που αφορούν ασθενείς.
-    Κανένα view / service δεν πρέπει να κάνει raw Patient.objects.filter.
-    """
 
     @staticmethod
     def for_psych(psych: Psychologist):
@@ -24,7 +19,7 @@ class PatientRepository:
     def get_by_id_for_psych(psych: Psychologist, patient_id: int):
         """
         Επιστρέφει έναν ασθενή ΜΟΝΟ αν ανήκει στον ψυχολόγο.
-        Αν δεν τον βρει → 404 (σωστό για REST APIs).
+        Αν δεν τον βρει τοτε 404.
         """
         return get_object_or_404(Patient, psychologist=psych, id=patient_id)
 
@@ -50,10 +45,7 @@ class PatientRepository:
     @staticmethod
     def create_for_psych(psych: Psychologist, data: dict):
         """
-        Δημιουργεί έναν νέο ασθενή και τον "δένει" αυτόματα
-        με τον τρέχοντα ψυχολόγο.
-        Το service layer θα φιλτράρει και θα κάνει validations,
-        το repository απλά μιλάει στη βάση.
+        Δημιουργεί έναν νέο ασθενή.
         """
         return Patient.objects.create(psychologist=psych, **data)
 
@@ -61,7 +53,6 @@ class PatientRepository:
     def update_patient(patient: Patient, data: dict):
         """
         Κάνει update στα πεδία του ασθενή.
-        Δεν αποφασίζει αν επιτρέπεται ή όχι → αυτό είναι δουλειά του service.
         """
         for key, value in data.items():
             setattr(patient, key, value)
@@ -71,8 +62,7 @@ class PatientRepository:
     @staticmethod
     def delete_patient(patient: Patient):
         """
-        Διαγραφή ασθενή. Αν δεν επιτρέπεται επιχειρησιακά,
-        θα το χειριστεί το service layer.
+        Διαγραφή ασθενή.
         """
         patient.delete()
 
@@ -81,12 +71,9 @@ class PatientRepository:
 class TreatmentPlanRepository:
     """
     Repository Layer για TreatmentPlan.
-    Εδώ μπαίνουν ΜΟΝΟ queries/CRUD προς DB (όχι business rules).
-    """
+       """
 
-    # -------------------------
-    # READ / QUERY METHODS
-    # -------------------------
+
 
     @staticmethod
     def for_psych(psych: Psychologist) -> QuerySet[TreatmentPlan]:
@@ -98,7 +85,7 @@ class TreatmentPlanRepository:
     @staticmethod
     def for_patient(psych: Psychologist, patient: Patient) -> QuerySet[TreatmentPlan]:
         """
-        Όλα τα plans ενός ασθενή, αλλά ασφαλισμένο:
+        Όλα τα plans ενός ασθενή:
         - plan.psychologist = psych
         - plan.patient = patient
         """
@@ -116,7 +103,7 @@ class TreatmentPlanRepository:
     def get_active_for_patient(psych: Psychologist, patient: Patient) -> TreatmentPlan | None:
         """
         Επιστρέφει το ενεργό plan (is_active=True) για έναν ασθενή,
-        αν υπάρχει. Αν υπάρχουν πολλά (δεν θα έπρεπε), παίρνει το πρώτο.
+        αν υπάρχει. Αν υπάρχουν πολλά, παίρνει το πρώτο.
         """
         return (
             TreatmentPlan.objects.filter(
@@ -128,19 +115,13 @@ class TreatmentPlanRepository:
             .first()
         )
 
-    # -------------------------
-    # CREATE
-    # -------------------------
 
     @staticmethod
     def create(psych: Psychologist, patient: Patient, data: dict) -> TreatmentPlan:
         """
         Δημιουργεί νέο TreatmentPlan συνδεδεμένο με psychologist & patient.
-        Δεν εμπιστευόμαστε ποτέ το frontend να δώσει αυτά τα FK.
         """
 
-        # Αν το μοντέλο σου έχει created_at/updated_at ως nullable και δεν είναι auto_now,
-        # τα θέτουμε εδώ ώστε να έχουν τιμή.
         now = timezone.now()
         if "created_at" not in data:
             data["created_at"] = now
@@ -153,9 +134,6 @@ class TreatmentPlanRepository:
             **data
         )
 
-    # -------------------------
-    # UPDATE (defensive: block critical fields)
-    # -------------------------
 
     @staticmethod
     def update(plan: TreatmentPlan, data: dict) -> TreatmentPlan:
@@ -165,7 +143,6 @@ class TreatmentPlanRepository:
         - patient
         - psychologist
         - created_at
-        (και ενημερώνουμε updated_at εμείς)
         """
         disallowed = {"id", "pk", "patient", "psychologist", "created_at"}
 
@@ -174,20 +151,15 @@ class TreatmentPlanRepository:
                 continue
             setattr(plan, key, value)
 
-        # κρατάμε εμείς consistent το updated_at
         plan.updated_at = timezone.now()
         plan.save()
         return plan
 
-    # -------------------------
-    # STATE HELPERS (DB-level operations)
-    # -------------------------
 
     @staticmethod
     def set_active(plan: TreatmentPlan) -> TreatmentPlan:
         """
-        Απλά κάνει το συγκεκριμένο plan active.
-        Το business rule "μόνο ένα active ανά ασθενή" ανήκει στο Service Layer.
+        κάνει το συγκεκριμένο plan active.
         """
         plan.is_active = True
         plan.updated_at = timezone.now()
@@ -204,9 +176,6 @@ class TreatmentPlanRepository:
         plan.save(update_fields=["is_active", "updated_at"])
         return plan
 
-    # -------------------------
-    # DELETE
-    # -------------------------
 
     @staticmethod
     def delete(plan: TreatmentPlan) -> None:

@@ -6,10 +6,7 @@ from django.utils import timezone
 
 
 class AppointmentRepository:
-    """
-    Repository Layer για το Appointment model.
-    Περιέχει ΟΛΑ τα queries και την επικοινωνία με τη βάση.
-    """
+
 
     @staticmethod
     def for_psych(psych: Psychologist):
@@ -51,8 +48,6 @@ class AppointmentRepository:
     def create(psych: Psychologist, patient: Patient, data: dict):
         """
         Δημιουργεί νέο ραντεβού.
-        Το ψυχολογικό & ο ασθενής δεν έρχονται ποτέ από το frontend.
-        Τα περνάμε ΕΜΕΙΣ για ασφάλεια.
         """
         return Appointment.objects.create(
             psychologist=psych,
@@ -84,14 +79,10 @@ class AppointmentRepository:
         app.save()
         return app
 
-    # ---------------------------------------------------------
-    # DELETE
-    # ---------------------------------------------------------
 
     @staticmethod
     def delete(app: Appointment):
         """
         Διαγράφει ραντεβού.
-        Αν μελλοντικά θέλεις soft delete, το αλλάζεις εδώ.
         """
         app.delete()

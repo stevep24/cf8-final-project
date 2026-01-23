@@ -18,7 +18,7 @@ class TreatmentPlanService:
         # 1) Βρίσκουμε τον ασθενή με ασφάλεια (μόνο για τον συγκεκριμένο psych)
         patient = PatientRepository.get_by_id_for_psych(psych, patient_id)
 
-        # 2) Παίρνουμε όλα τα plans του ασθενή, “δεμένα” και με τον psych
+        # 2) Παίρνουμε όλα τα plans του ασθενή.
         return TreatmentPlanRepository.for_patient(psych, patient)
 
     @staticmethod
@@ -42,7 +42,7 @@ class TreatmentPlanService:
 
         Rules:
         - Ο ασθενής ΠΡΕΠΕΙ να ανήκει στον ψυχολόγο.
-        - Το plan δημιουργείται ως inactive (εκτός αν αποφασίσει αλλιώς άλλο service).
+        - Το plan δημιουργείται ως inactive.
         """
 
         # Ownership check: ο ασθενής πρέπει να είναι του ψυχολόγου

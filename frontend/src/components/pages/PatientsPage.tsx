@@ -14,9 +14,6 @@ const PatientsPage = () => {
 
     const token = localStorage.getItem("access");
 
-    // -------------------------
-    // FETCH
-    // -------------------------
     useEffect(() => {
         if (!token) {
             setError("Δεν είσαι συνδεδεμένος");
@@ -53,9 +50,9 @@ const PatientsPage = () => {
     };
 
 
-    // -------------------------
-    // DELETE
-    // -------------------------
+
+     {/* DELETE */}
+
     const deletePatient = async (id: number) => {
         if (!confirm("Σίγουρα θέλεις να διαγράψεις τον ασθενή;")) return;
 
@@ -68,9 +65,10 @@ const PatientsPage = () => {
         setExpandedId(null);
     };
 
-    // -------------------------
-    // EDIT
-    // -------------------------
+
+
+   {/* EDIT */}
+
     const startEdit = (p: Patient) => {
         setEditId(p.id);
         setEditForm({ ...p });
@@ -100,9 +98,6 @@ const PatientsPage = () => {
         setEditForm({});
     };
 
-    // -------------------------
-    // RENDER
-    // -------------------------
     return (
         <div className="p-10 text-white max-w-6xl mx-auto">
             <div className="flex items-center justify-between mb-6">

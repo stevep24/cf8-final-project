@@ -25,8 +25,7 @@ class AuthService:
     @transaction.atomic
     def register_psychologist(data: dict) -> User:
         """
-        Use case:
-        - Δημιουργία νέου χρήστη + ψυχολόγου
+        Δημιουργία νέου χρήστη + ψυχολόγου
         """
 
         # 1️⃣ Δημιουργία User
@@ -38,7 +37,9 @@ class AuthService:
             last_name=data.get("last_name", ""),
         )
 
-        # 2️⃣ Δημιουργία Psychologist (domain entity)
+        """
+        Δημιουργία Psychologist
+        """
         PsychologistRepository.create_for_user(
             user=user,
             data={

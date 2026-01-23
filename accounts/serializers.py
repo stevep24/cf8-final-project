@@ -6,8 +6,7 @@ from .models import Psychologist
 
 class UserSerializer(serializers.ModelSerializer):
     """
-    Μεταφράζει τον Django User (Python object)
-    σε JSON για το frontend, αλλά μόνο με ασφαλή πεδία.
+    Μεταφράζει τον Django User σε JSON για το frontend.
     """
 
     class Meta:
@@ -23,7 +22,6 @@ class UserSerializer(serializers.ModelSerializer):
 class PsychologistSerializer(serializers.ModelSerializer):
     """
     Serializer για το προφίλ του ψυχολόγου.
-    Περιλαμβάνει nested τον User, μόνο για ανάγνωση.
     """
 
     user = UserSerializer(read_only=True)
