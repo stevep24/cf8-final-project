@@ -238,7 +238,7 @@ const AppointmentPage = () => {
                                 />
 
                                 <button
-                                    className="mt-2 bg-logo-color text-sky-950 px-3 py-1 rounded"
+                                    className="mt-2 bg-logo-color text-sky-950 px-3 py-1 rounded cursor-pointer"
                                     onClick={async () => {
                                         const value = notes[app.id]?.trim();
                                         if (!value) return;

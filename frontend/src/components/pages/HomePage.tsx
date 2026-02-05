@@ -77,13 +77,13 @@ const HomePage = () => {
                         <p className="text-sm opacity-80">Γρήγορη ενέργεια</p>
                         <button
                             onClick={() => navigate("/appointments")}
-                            className="text-logo-color underline"
+                            className="text-logo-color underline cursor-pointer"
                         >
                             Νέο ραντεβού
                         </button>
                         <button
                             onClick={() => navigate("/signup")}
-                            className="text-logo-color underline pl-2"
+                            className="text-logo-color underline pl-2 cursor-pointer"
                         >
                             Νέος Ασθενης
                         </button>
@@ -99,14 +99,14 @@ const HomePage = () => {
                 <div className="flex flex-wrap gap-4">
                     <button
                         onClick={() => navigate("/patients")}
-                        className="bg-logo-color text-sky-950 px-4 py-2 rounded hover:bg-amber-400"
+                        className="bg-logo-color text-sky-950 px-4 py-2 rounded hover:bg-amber-400 cursor-pointer"
                     >
                         Λίστα ασθενών
                     </button>
 
                     <button
                         onClick={() => navigate("/appointments")}
-                        className="bg-logo-color text-sky-950 px-4 py-2 rounded hover:bg-amber-400"
+                        className="bg-logo-color text-sky-950 px-4 py-2 rounded hover:bg-amber-400 cursor-pointer"
                     >
                         Ραντεβού
                     </button>
