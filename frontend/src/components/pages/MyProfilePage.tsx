@@ -36,9 +36,40 @@ const MyProfilePage = () => {
         setIsEditing(false);
     };
 
-    const handleSave = () => {
-        setOriginalProfile(profile);
-        setIsEditing(false);
+    const handleSave = async () => {
+        if (!profile) return;
+
+        const token = localStorage.getItem("access");
+        if (!token) return;
+
+        try {
+            const res = await fetch("http://localhost:8000/api/accounts/psychologist/update/", {
+                method: "PATCH",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${token}`,
+                },
+                body: JSON.stringify({
+                    first_name: profile.first_name,
+                    last_name: profile.last_name,
+                    phone_number: profile.phone_number,
+                    specialization: profile.specialization,
+                    notes: profile.notes ?? "",
+                }),
+            });
+
+            if (!res.ok) {
+                throw new Error("Αποτυχία ενημέρωσης προφίλ");
+            }
+
+            const updated = await res.json();
+            setProfile(updated);
+            setOriginalProfile(updated);
+            setIsEditing(false);
+        } catch (e) {
+            console.error(e);
+            alert("Κάτι πήγε στραβά κατά την ενημέρωση του προφίλ.");
+        }
     };
 
     if (!profile) return null;

@@ -51,7 +51,7 @@ const PatientsPage = () => {
 
 
 
-     {/* DELETE */}
+    // DELETE
 
     const deletePatient = async (id: number) => {
         if (!confirm("Σίγουρα θέλεις να διαγράψεις τον ασθενή;")) return;
@@ -67,7 +67,7 @@ const PatientsPage = () => {
 
 
 
-   {/* EDIT */}
+   // EDIT
 
     const startEdit = (p: Patient) => {
         setEditId(p.id);

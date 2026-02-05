@@ -65,7 +65,7 @@ class AppointmentService:
             if key not in disallowed_fields
         }
 
-        # 3️⃣ Δημιουργούμε το ραντεβού με default status
+        # Δημιουργούμε το ραντεβού με default status
         appointment = AppointmentRepository.create(
             psych=psych,
             patient=patient,

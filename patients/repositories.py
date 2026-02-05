@@ -40,7 +40,7 @@ class PatientRepository:
 
     @staticmethod
     def active_for_psych(psych: Psychologist):
-        return Patient.objects.filter(psychologist=psych, is_active=True)
+        return Patient.objects.filter(psychologist=psych, status="ACTIVE")
 
     @staticmethod
     def create_for_psych(psych: Psychologist, data: dict):
