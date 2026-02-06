@@ -39,7 +39,7 @@ const Header = () => {
                         {isLoggedIn && (
                             <button
                                 onClick={() => setOpen(!open)}
-                                className="ml-2 text-logo-color hover:text-amber-400 transition"
+                                className="ml-2 text-logo-color hover:text-amber-400 transition cursor-pointer"
                             >
                                 {open ? <X /> : <Menu />}
                             </button>
@@ -53,7 +53,7 @@ const Header = () => {
                             onClick={logout}
                             className="text-sm font-semibold text-logo-color
                            border border-logo-color px-3 py-1 rounded-md
-                           hover:bg-logo-color hover:text-sky-950 transition"
+                           hover:bg-logo-color hover:text-sky-950 transition cursor-pointer"
                         >
                             Logout
                         </button>

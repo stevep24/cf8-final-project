@@ -44,3 +44,16 @@ def psychologist_me_view(request):
     psychologist = PsychologistService.get_profile_for_user(request.user)
     serializer = PsychologistSerializer(psychologist)
     return Response(serializer.data)
+
+
+@api_view(["PATCH"])
+@permission_classes([IsAuthenticated])
+def update_psychologist_view(request):
+    """
+    Ενημερώνει το ΠΛΗΡΕΣ προφίλ του συνδεδεμένου ψυχολόγου.
+    """
+    psychologist = PsychologistService.update_profile_for_user(
+        request.user, request.data
+    )
+    serializer = PsychologistSerializer(psychologist)
+    return Response(serializer.data)

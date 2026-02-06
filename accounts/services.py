@@ -19,6 +19,19 @@ class PsychologistService:
         """
         return PsychologistRepository.get_by_user(user)
 
+    @staticmethod
+    def update_profile_for_user(user: User, data: dict) -> Psychologist:
+        """
+        Use case:
+        - Ο συνδεδεμένος χρήστης ενημερώνει το προφίλ του.
+
+        Rules:
+        - Γίνεται update ΜΟΝΟ στο προφίλ του συνδεδεμένου χρήστη.
+        - Τα μη επιτρεπτά πεδία φιλτράρονται στο repository layer.
+        """
+        psychologist = PsychologistRepository.get_by_user(user)
+        return PsychologistRepository.update(psychologist, data)
+
 class AuthService:
 
     @staticmethod
